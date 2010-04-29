@@ -14,7 +14,7 @@ Release:	%mkrel 0.0.2
 License:	GPL
 Group:		System/Servers
 URL:		http://mds.mandriva.org/
-Source0:	%{name}-%{version}.tar.gz
+Source0:	%{name}-%{version}-%{ver}.tar.gz
 Source1:	mmc-agent.init
 Patch0:		mmc-core-3.0.0-mdv_conf.diff
 BuildRequires:	python-devel
