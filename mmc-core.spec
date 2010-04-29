@@ -5,11 +5,12 @@
 %if %mdkversion < 200610
 %define py_puresitedir %{_prefix}/lib/python%{pyver}/site-packages/
 %endif
+%define ver 6790
 
 Summary:	Mandriva Management Console Agent
 Name:		mmc-core
 Version:	3.0.0
-Release:	%mkrel 0.0.1
+Release:	%mkrel 0.0.2
 License:	GPL
 Group:		System/Servers
 URL:		http://mds.mandriva.org/
@@ -40,6 +41,8 @@ XMLRPC server of the MMC API.
 Summary:	Mandriva Management Console base plugin
 Group:		System/Servers
 Requires:	python-ldap
+Requires:       cdrkit-genisoimage
+Requires:       python-mmc-core >= %{version}
 # python-twisted-* deps is to be investigated
 #Requires:	python-twisted
 #Requires:	python-twisted-conch
