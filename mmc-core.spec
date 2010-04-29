@@ -62,7 +62,6 @@ Contains the base infrastructure for all MMC plugins:
 %package -n	python-mmc-core
 Summary:	Core shared dependency for MMC API
 Group:		System/Servers
-Requires:	python-mmc-base >= %{version}
 Suggests:	python-sqlalchemy < 0.5
 Suggests:	python-mysql
 Requires:	python-twisted-web
