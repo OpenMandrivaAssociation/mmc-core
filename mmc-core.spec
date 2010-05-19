@@ -5,16 +5,15 @@
 %if %mdkversion < 200610
 %define py_puresitedir %{_prefix}/lib/python%{pyver}/site-packages/
 %endif
-%define ver 6790
 
 Summary:	Mandriva Management Console Agent
 Name:		mmc-core
 Version:	3.0.0
-Release:	%mkrel 0.0.2
+Release:	%mkrel 1
 License:	GPL
 Group:		System/Servers
 URL:		http://mds.mandriva.org/
-Source0:	%{name}-%{version}-%{ver}.tar.gz
+Source0:	http://mds.mandriva.org/pub/mmc-core/sources/3.0.0/%{name}-%{version}.tar.gz
 Source1:	mmc-agent.init
 Patch0:		mmc-core-3.0.0-mdv_conf.diff
 BuildRequires:	python-devel
@@ -260,4 +259,3 @@ rm -rf %{buildroot}
 %files -n mmc-web-ppolicy
 %defattr(-,root,root,0755)
 %{_datadir}/mmc/modules/ppolicy
-
