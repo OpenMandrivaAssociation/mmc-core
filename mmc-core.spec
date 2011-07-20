@@ -1,4 +1,5 @@
-%define _requires_exceptions pear(graph\\|pear(includes\\|pear(modules\\|pear(license.php)
+%define _requires_exceptions pear(graph\\|pear(includes\\|pear(modules
+
 %define _enable_debug_packages %{nil}
 %define debug_package          %{nil}
 
@@ -6,145 +7,123 @@
 %define py_puresitedir %{_prefix}/lib/python%{pyver}/site-packages/
 %endif
 
-Summary:	Mandriva Management Console Agent
+Summary:	Mandriva Management Console
 Name:		mmc-core
-Version:	3.0.0
-Release:	%mkrel 3
+Version:	3.0.2
+%define subrel 1
+Release:	%mkrel 0
 License:	GPL
-Group:		System/Servers
+Group:		System/Management
 URL:		http://mds.mandriva.org/
-Source0:	http://mds.mandriva.org/pub/mmc-core/sources/3.0.0/%{name}-%{version}.tar.gz
-Source1:	mmc-agent.init
-Patch0:		mmc-core-3.0.0-mdv_conf.diff
+Source0:        http://mds.mandriva.org/pub/mmc-core/sources/%{version}/%{name}-%{version}.tar.gz
 BuildRequires:	python-devel
+BuildRequires:	gettext
+BuildRequires:	gettext-devel
 BuildRequires:	openldap-devel
-BuildArch: 	noarch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
-XMLRPC server of the MMC API.
+Mandriva Management Console agent & web interface with
+base and password policies modules.
 
-%package -n	mmc-agent
-Summary:	Mandriva Management Console Agent
-Group:		System/Servers
-Requires:	pycrypto
-Requires:	python-mmc-base >= %{version}
-Requires:	python-OpenSSL
-Requires(post): rpm-helper
-Requires(preun): rpm-helper
+%package -n mmc-agent
+Summary:    Mandriva Management Console agent
+Group:      System/Management
+Requires:   python-base
+Requires:   python-mmc-base
+Requires:   pyOpenSSL
+Requires:   logrotate
 
-%description -n	mmc-agent
-XMLRPC server of the MMC API.
+%description -n mmc-agent
+XMLRPC server of the Mandriva Management Console API.
+This is the underlying service used by the MMC web interface.
+
+%package -n python-mmc-core
+Summary:    Mandriva Management Console core
+Group:      System/Management
+Requires:   python-base
+Suggests:   python-sqlalchemy > 0.4
+Suggests:   python-mysql
+
+%description -n python-mmc-core
+Contains the mmc core python classes used by all other
+modules.
 
 %package -n	python-mmc-base
 Summary:	Mandriva Management Console base plugin
-Group:		System/Servers
+Group:      System/Management
+Requires:   python-base
 Requires:	python-ldap
-Requires:       cdrkit-genisoimage
-Requires:       python-mmc-core >= %{version}
-# python-twisted-* deps is to be investigated
-#Requires:	python-twisted
-#Requires:	python-twisted-conch
-#Requires:	python-twisted-core
-#Requires:	python-twisted-lore
-#Requires:	python-twisted-mail
-#Requires:	python-twisted-names
-#Requires:	python-twisted-runner
-#Requires:	python-twisted-web
-#Requires:	python-twisted-words
+Requires:	python-mmc-plugins-tools
+Requires:	python-twisted
+Requires:	python-mmc-core
 
 %description -n	python-mmc-base
 Contains the base infrastructure for all MMC plugins:
  * support classes
  * base LDAP management classes
 
-%package -n	python-mmc-core
-Summary:	Core shared dependency for MMC API
-Group:		System/Servers
-Suggests:	python-sqlalchemy < 0.5
-Suggests:	python-mysql
-Requires:	python-twisted-web
-Conflicts:	python-mmc-base < 2.3.3
+%package -n python-mmc-ppolicy
+Summary:    Mandriva Management Console password policy plugin
+Group:      System/Management
+Requires:   python-base
+Requires:   python-mmc-core
+Suggests:   mmc-check-password
 
-%description -n	python-mmc-core
-Contains base functions used by MMC.
-
-%package -n	python-mmc-ppolicy
-Summary:	Mandriva Management Console password policy plugin
-Group:		System/Servers
-Requires:	python-mmc-base >= %{version}
-
-%description -n	python-mmc-ppolicy
-Contains password policy plugin to enforce minimum password security in MMC.
-
-%package -n	mmc-web-base
-Summary:	MMC web interface to interact with a MMC agent
-Group:		System/Servers
-Requires:	apache-mod_php
-Requires:	php-xmlrpc
-Requires:	php-iconv
-Requires:	php-gd
-%if %mdkversion < 201010
-Requires(post):   rpm-helper
-Requires(postun):   rpm-helper
-%endif
-
-%description -n	mmc-web-base
-Mandriva Management Console web interface designed by Mandriva.
+%description -n python-mmc-ppolicy
+Contains the password policy python classes to handle
+password policies in LDAP.
 
 %package -n	mmc-web-ppolicy
-Summary:	Password policy module for Mandriva MMC
-Group:		System/Servers
-Requires:	python-mmc-base >= %{version}
+Summary:	Password policies plugin
+Group:		System/Management
+Requires:	mmc-web-base
 
-%description -n	mmc-web-ppolicy
-Module to enforce minimum password security in MMC.
+%description -n mmc-web-ppolicy
+Contains the password policy web interface
 
+%package -n 	mmc-web-base
+Summary:        MMC web interface to interact with a MMC agent
+Group:          System/Management
+Requires:       apache >= 2.0.52
+Requires:       apache-mod_php
+Requires:       php-xmlrpc
+Requires:       php-iconv
+
+%description -n mmc-web-base
+Mandriva Management Console web interface designed by Linbox.
+
+%package -n	python-mmc-plugins-tools
+Summary:	Required tools for some MMC plugins
+Group:		System/Management
+Requires:	mkisofs
+
+%description -n	python-mmc-plugins-tools
+Contains common tools needed by some plugins of mmc-agent package.
+
+%package -n	mmc-check-password
+Summary:	OpenLDAP password checker module for MMC
+Group:		System/Management
+
+%description -n mmc-check-password
+OpenLDAP module to validate users passwords against LDAP's password policies.
 
 %prep
-
 %setup -q -n %{name}-%{version}
-
-for i in `find . -type d -name .svn`; do
-    if [ -e "$i" ]; then rm -rf $i; fi >&/dev/null
-done
-%patch0 -p1
-
-cp %{SOURCE1} mmc-agent.init
-
-# mdv default fixes
-#for i in `find -type f`; do
-#    perl -pi -e "s|ou=Groups\b|ou=Group|g;s|ou=Users\b|ou=People|g;s|ou=Computers\b|ou=Hosts|g" $i
-#done
 
 %build
 
-# this is packaged separately in the mmc-check-password package
-pushd agent/openldap-check-password
-    make CFLAGS="%{optflags} -fPIC"
-popd
+./configure --prefix=/usr --sysconfdir=%{_sysconfdir} --localstatedir=%{_localstatedir} \
+  --libdir=%{_libdir} --with-initdir=%{_initrddir} \
+  --disable-python-check --enable-check-password \
+  --with-ldap-confdir=%{_sysconfdir}/openldap --with-ldap-libdir=%{_libdir}/openldap
+make
 
 %install
 rm -rf %{buildroot}
-
-%makeinstall_std -C agent PREFIX=%{_prefix} LIBDIR=%{_prefix}/lib/mmc
-%makeinstall_std -C web PREFIX=%{_prefix} LIBDIR=%{_prefix}/lib/mmc
-
-pushd agent
-    rm -rf %{buildroot}%{_prefix}/lib*/python*
-    python setup.py install --root=%{buildroot} --install-purelib=%{py_puresitedir}
-popd
-
-pushd web
-    make apache_conf
-popd
-
-install -d %{buildroot}%{_initrddir}
+make DESTDIR="$RPM_BUILD_ROOT" install
+# logrotate configuration
 install -d %{buildroot}%{_sysconfdir}/logrotate.d
-install -d %{buildroot}/var/log/mmc
-
-install -m0755 mmc-agent.init %{buildroot}%{_initrddir}/mmc-agent
-
 # install log rotation stuff
 cat > %{buildroot}%{_sysconfdir}/logrotate.d/mmc-agent << EOF
 /var/log/mmc/mmc-agent.log /var/log/dhcp-ldap-startup.log /var/log/mmc/mmc-fileprefix.log {
@@ -157,105 +136,131 @@ cat > %{buildroot}%{_sysconfdir}/logrotate.d/mmc-agent << EOF
     endscript
 }
 EOF
-
-# put the openldap schemas in place
-install -d %{buildroot}%{_datadir}/openldap/schema
-install -m0644 agent/contrib/ldap/mmc.schema %{buildroot}%{_datadir}/openldap/schema/
-
-install -d %{buildroot}%{_sysconfdir}/httpd/conf/webapps.d
-
-cat > %{buildroot}%{_sysconfdir}/httpd/conf/webapps.d/mmc-web-base.conf << EOF
-Alias /mmc %{_datadir}/mmc
-
-<Directory "%{_datadir}/mmc">
-    AllowOverride None
-    Order allow,deny
-    allow from all
-    php_flag short_open_tag on
-    php_flag magic_quotes_gpc on
-</Directory>
-EOF
-
-# cleanup
-rm -f %{buildroot}%{_sysconfdir}/openldap/mmc-check-password.conf
-
-# nuke the license.php file on Enterprise products
-if [ "%{product_type}" == Enterprise ]; then
-    rm -f %{buildroot}%{_datadir}/mmc/license.php
-fi
+# install log directory
+install -d %{buildroot}/var/log/mmc
+# patch privkey.pem
+mv %{buildroot}%{_sysconfdir}/mmc/agent/keys/localcert.pem %{buildroot}%{_sysconfdir}/mmc/agent/keys/privkey.pem
+sed -i 's!localcert.pem!privkey.pem!g' %{buildroot}%{_sysconfdir}/mmc/agent/config.ini
+# install apache configuration
+install -d %{buildroot}%{_sysconfdir}/httpd/conf/webapps.d/
+cp %{buildroot}%{_sysconfdir}/mmc/apache/mmc.conf %{buildroot}%{_sysconfdir}/httpd/conf/webapps.d/mmc.conf
+# FIXME
+install -d %{buildroot}%{_sysconfdir}/openldap/
+mv %{buildroot}%{_libdir}/openldap/mmc-check-password.conf %{buildroot}%{_sysconfdir}/openldap/mmc-check-password.conf
+# Cleanup
+rm -f `find %{buildroot} -name *.pyo`
+%find_lang base
+%find_lang ppolicy
 
 %post -n mmc-agent
-%_post_service mmc-agent
+if [ $1 = 1 ]; then
+    /sbin/chkconfig --add mmc-agent >/dev/null 2>&1 || :
+fi
+# comment on le fait juste pour un package ?
+if [ -f /var/lock/subsys/httpd ]; then
+    %{_initrddir}/httpd restart >/dev/null || :
+fi
 
 %preun -n mmc-agent
-%_preun_service mmc-agent
+if [ $1 = 0 ]; then
+   /sbin/chkconfig --del mmc-agent >/dev/null 2>&1 || :
+   [ -f /var/lock/subsys/mmc-agent ] && %{_initrddir}/mmc-agent stop >/dev/null 2>&1 || :
+fi
+exit 0
 
-%post -n mmc-web-base
-%if %mdkversion < 201010
-%_post_webapp
-%endif
-
-%postun -n mmc-web-base
-%if %mdkversion < 201010
-%_postun_webapp
-%endif
+%postun -n mmc-agent
+if [ "$1" -ge 1 ]; then
+    %{_initrddir}/mmc-agent condrestart >/dev/null 2>&1 || :
+fi
+# comment on le fait juste pour un package ?
+if [ "$1" = "0" ]; then
+    if [ -f /var/lock/subsys/httpd ]; then
+        %{_initrddir}/httpd restart >/dev/null || :
+    fi
+fi
 
 %clean
 rm -rf %{buildroot}
 
 %files -n mmc-agent
 %defattr(-,root,root,0755)
+%doc COPYING ChangeLog
 %attr(0755,root,root) %{_initrddir}/mmc-agent
+%attr(0755,root,root) %dir %{_sysconfdir}/mmc
 %attr(0755,root,root) %dir %{_sysconfdir}/mmc/agent
 %attr(0755,root,root) %dir %{_sysconfdir}/mmc/agent/keys
 %attr(0640,root,root) %config(noreplace) %{_sysconfdir}/mmc/agent/config.ini
 %attr(0640,root,root) %config(noreplace) %{_sysconfdir}/mmc/agent/keys/cacert.pem
-%attr(0640,root,root) %config(noreplace) %{_sysconfdir}/mmc/agent/keys/localcert.pem
+%attr(0640,root,root) %config(noreplace) %{_sysconfdir}/mmc/agent/keys/privkey.pem
 %attr(0644,root,root) %config(noreplace) %{_sysconfdir}/logrotate.d/mmc-agent
 %attr(0755,root,root) %{_sbindir}/mmc-agent
-%{py_puresitedir}/mmc/agent.py*
-%if %mdkversion >= 200700
-%{py_puresitedir}/*.egg-info
-%endif
+%attr(0755,root,root) %{_sbindir}/mmc-add-schema
+%attr(0755,root,root) %{_bindir}/mmc-helper
 %attr(0755,root,root) %dir /var/log/mmc
-
-%files -n python-mmc-base
-%defattr(-,root,root,0755)
-%doc agent/contrib
-%attr(0640,root,root) %config(noreplace) %{_sysconfdir}/mmc/plugins/base.ini
-%{_sbindir}/mds-report
-%{_prefix}/lib/mmc/backup-tools/cdlist
-%{_prefix}/lib/mmc/backup-tools/backup.sh
-%{py_puresitedir}/mmc/plugins/__init__.py*
-%{py_puresitedir}/mmc/plugins/base
-%{_datadir}/openldap/schema/mmc.schema
+%{py_puresitedir}/mmc/agent.py*
 
 %files -n python-mmc-core
 %defattr(-,root,root,0755)
-%{_bindir}/mmc-helper
-%{_bindir}/mmc-password-helper
 %{py_puresitedir}/mmc/core
+
+%files -n python-mmc-base
+%defattr(-,root,root,0755)
+%{_datadir}/doc/python-mmc-base
+%docdir %{_datadir}/doc/python-mmc-base
+%attr(0755,root,root) %dir %{_sysconfdir}/mmc/plugins
+%attr(0640,root,root) %config(noreplace) %{_sysconfdir}/mmc/plugins/base.ini
+%attr(0755,root,root) %{_sbindir}/mds-report
+%dir %{py_puresitedir}/mmc
 %{py_puresitedir}/mmc/support
-%{py_puresitedir}/mmc/client.py*
 %{py_puresitedir}/mmc/__init__.py*
+%{py_puresitedir}/mmc/site.py*
+%{py_puresitedir}/mmc/client.py*
+%dir %{py_puresitedir}/mmc/plugins
+%{py_puresitedir}/mmc/plugins/__init__.py*
+%{py_puresitedir}/mmc/plugins/base
 
 %files -n python-mmc-ppolicy
 %defattr(-,root,root,0755)
 %attr(0640,root,root) %config(noreplace) %{_sysconfdir}/mmc/plugins/ppolicy.ini
 %{py_puresitedir}/mmc/plugins/ppolicy
 
-%files -n mmc-web-base
-%defattr(-,root,root,0755)
-%config(noreplace) %{_sysconfdir}/httpd/conf/webapps.d/mmc-web-base.conf
-%attr(0640,root,apache) %config(noreplace) %{_sysconfdir}/mmc/mmc.ini
-%{_datadir}/mmc/graph
-%{_datadir}/mmc/img
-%{_datadir}/mmc/includes
-%{_datadir}/mmc/*.php
-%{_datadir}/mmc/jsframework
-%{_datadir}/mmc/logout
-%{_datadir}/mmc/modules/base
-
-%files -n mmc-web-ppolicy
+%files -n mmc-web-ppolicy -f ppolicy.lang
 %defattr(-,root,root,0755)
 %{_datadir}/mmc/modules/ppolicy
+
+%files -n mmc-web-base -f base.lang
+%defattr(-,root,root,0755)
+%attr(0755,root,root) %dir %{_sysconfdir}/mmc/apache
+%attr(0640,root,root) %config(noreplace) %{_sysconfdir}/mmc/apache/mmc.conf
+%attr(0755,root,root) %dir %{_sysconfdir}/httpd/conf/webapps.d/
+%attr(0640,root,root) %config(noreplace) %{_sysconfdir}/httpd/conf/webapps.d/mmc.conf
+%attr(0640,root,apache) %config(noreplace) %{_sysconfdir}/mmc/mmc.ini
+%dir %{_datadir}/mmc
+%{_datadir}/mmc/*
+%exclude %{_datadir}/mmc/modules/ppolicy
+
+%files -n python-mmc-plugins-tools
+%defattr(-,root,root,0755)
+%dir %{_libdir}/mmc
+%dir %{_libdir}/mmc/backup-tools
+%{_libdir}/mmc/backup-tools/cdlist
+%{_libdir}/mmc/backup-tools/backup.sh
+
+%files -n mmc-check-password
+%defattr(-,root,root,0755)
+%attr(0644,root,root) %config(noreplace) %{_sysconfdir}/openldap/mmc-check-password.conf
+%attr(0755,root,root) %{_libdir}/openldap/mmc-check-password.*
+%attr(0755,root,root) %{_bindir}/mmc-password-helper
+
+%changelog
+* Thu Jun 23 2011 Jean-Philippe Braun <jpbraun@mandriva.com> - 3.0.2
+- new upstream release
+
+* Tue May 20 2008  <cdelfosse@mandriv.com> - 2.3.1-1.RHEL4
+- new upstream release
+
+* Thu Apr  3 2008 Cedric <cdelfosse@mandriva.com> - 1.0.0-1.el5
+- initial Redhat RHEL5 package.
+
+* Sun Jan 20 2008 Oden Eriksson <oeriksson@mandriva.com> 1.0.0-1.RHEL4
+- initial Redhat RHEL4 package.
