@@ -13,7 +13,7 @@ Version:	3.0.2
 %define subrel 3
 Release:	%mkrel 0
 License:	GPL
-Group:		System/Management
+Group:		System/Servers
 URL:		http://mds.mandriva.org/
 Source0:	http://mds.mandriva.org/pub/mmc-core/sources/%{version}/%{name}-%{version}.tar.gz
 BuildRequires:	python-devel
@@ -28,7 +28,7 @@ base and password policies modules.
 
 %package -n mmc-agent
 Summary:    Mandriva Management Console agent
-Group:      System/Management
+Group:      System/Servers
 Requires:   python-base
 Requires:   python-mmc-base
 Requires:   pyOpenSSL
@@ -40,7 +40,7 @@ This is the underlying service used by the MMC web interface.
 
 %package -n python-mmc-core
 Summary:    Mandriva Management Console core
-Group:      System/Management
+Group:      System/Servers
 Requires:   python-base
 Requires:   python-twisted-web
 Suggests:   python-sqlalchemy > 0.4
@@ -52,7 +52,7 @@ modules.
 
 %package -n	python-mmc-base
 Summary:	Mandriva Management Console base plugin
-Group:      	System/Management
+Group:      	System/Servers
 Requires:   	python-base
 Requires:  	python-ldap
 Requires:   	python-mmc-plugins-tools
@@ -65,7 +65,7 @@ Contains the base infrastructure for all MMC plugins:
 
 %package -n python-mmc-ppolicy
 Summary:    Mandriva Management Console password policy plugin
-Group:      System/Management
+Group:      System/Servers
 Requires:   python-base
 Requires:   python-mmc-core
 Suggests:   mmc-check-password
@@ -76,7 +76,7 @@ password policies in LDAP.
 
 %package -n	mmc-web-ppolicy
 Summary:	Password policies plugin
-Group:		System/Management
+Group:		System/Servers
 Requires:	mmc-web-base
 
 %description -n mmc-web-ppolicy
@@ -84,7 +84,7 @@ Contains the password policy web interface
 
 %package -n 	mmc-web-base
 Summary:        MMC web interface to interact with a MMC agent
-Group:          System/Management
+Group:          System/Servers
 Requires:       apache >= 2.0.52
 Requires:       apache-mod_php
 Requires:       php-xmlrpc
@@ -95,7 +95,7 @@ Mandriva Management Console web interface designed by Linbox.
 
 %package -n	python-mmc-plugins-tools
 Summary:	Required tools for some MMC plugins
-Group:		System/Management
+Group:		System/Servers
 Requires:	cdrkit-genisoimage
 
 %description -n	python-mmc-plugins-tools
@@ -103,7 +103,7 @@ Contains common tools needed by some plugins of mmc-agent package.
 
 %package -n	mmc-check-password
 Summary:	OpenLDAP password checker module for MMC
-Group:		System/Management
+Group:		System/Servers
 
 %description -n mmc-check-password
 OpenLDAP module to validate users passwords against LDAP's password policies.
