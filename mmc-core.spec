@@ -10,12 +10,12 @@
 Summary:	Mandriva Management Console
 Name:		mmc-core
 Version:	3.0.2
-%define subrel 1
+%define subrel 3
 Release:	%mkrel 0
 License:	GPL
 Group:		System/Management
 URL:		http://mds.mandriva.org/
-Source0:        http://mds.mandriva.org/pub/mmc-core/sources/%{version}/%{name}-%{version}.tar.gz
+Source0:	http://mds.mandriva.org/pub/mmc-core/sources/%{version}/%{name}-%{version}.tar.gz
 BuildRequires:	python-devel
 BuildRequires:	gettext
 BuildRequires:	gettext-devel
@@ -42,6 +42,7 @@ This is the underlying service used by the MMC web interface.
 Summary:    Mandriva Management Console core
 Group:      System/Management
 Requires:   python-base
+Requires:   python-twisted-web
 Suggests:   python-sqlalchemy > 0.4
 Suggests:   python-mysql
 
@@ -51,12 +52,11 @@ modules.
 
 %package -n	python-mmc-base
 Summary:	Mandriva Management Console base plugin
-Group:      System/Management
-Requires:   python-base
-Requires:	python-ldap
-Requires:	python-mmc-plugins-tools
-Requires:	python-twisted
-Requires:	python-mmc-core
+Group:      	System/Management
+Requires:   	python-base
+Requires:  	python-ldap
+Requires:   	python-mmc-plugins-tools
+Requires:   	python-mmc-core
 
 %description -n	python-mmc-base
 Contains the base infrastructure for all MMC plugins:
@@ -96,7 +96,7 @@ Mandriva Management Console web interface designed by Linbox.
 %package -n	python-mmc-plugins-tools
 Summary:	Required tools for some MMC plugins
 Group:		System/Management
-Requires:	mkisofs
+Requires:	cdrkit-genisoimage
 
 %description -n	python-mmc-plugins-tools
 Contains common tools needed by some plugins of mmc-agent package.
@@ -144,9 +144,6 @@ sed -i 's!localcert.pem!privkey.pem!g' %{buildroot}%{_sysconfdir}/mmc/agent/conf
 # install apache configuration
 install -d %{buildroot}%{_sysconfdir}/httpd/conf/webapps.d/
 cp %{buildroot}%{_sysconfdir}/mmc/apache/mmc.conf %{buildroot}%{_sysconfdir}/httpd/conf/webapps.d/mmc.conf
-# FIXME
-install -d %{buildroot}%{_sysconfdir}/openldap/
-mv %{buildroot}%{_libdir}/openldap/mmc-check-password.conf %{buildroot}%{_sysconfdir}/openldap/mmc-check-password.conf
 # Cleanup
 rm -f `find %{buildroot} -name *.pyo`
 %find_lang base
@@ -251,16 +248,3 @@ rm -rf %{buildroot}
 %attr(0644,root,root) %config(noreplace) %{_sysconfdir}/openldap/mmc-check-password.conf
 %attr(0755,root,root) %{_libdir}/openldap/mmc-check-password.*
 %attr(0755,root,root) %{_bindir}/mmc-password-helper
-
-%changelog
-* Thu Jun 23 2011 Jean-Philippe Braun <jpbraun@mandriva.com> - 3.0.2
-- new upstream release
-
-* Tue May 20 2008  <cdelfosse@mandriv.com> - 2.3.1-1.RHEL4
-- new upstream release
-
-* Thu Apr  3 2008 Cedric <cdelfosse@mandriva.com> - 1.0.0-1.el5
-- initial Redhat RHEL5 package.
-
-* Sun Jan 20 2008 Oden Eriksson <oeriksson@mandriva.com> 1.0.0-1.RHEL4
-- initial Redhat RHEL4 package.
