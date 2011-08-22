@@ -9,8 +9,8 @@
 
 Summary:	Mandriva Management Console
 Name:		mmc-core
-Version:	3.0.2
-%define subrel 3
+Version:	3.0.2.1
+%define subrel 1
 Release:	%mkrel 0
 License:	GPL
 Group:		System/Servers
@@ -211,7 +211,8 @@ rm -rf %{buildroot}
 %{py_puresitedir}/mmc/support
 %{py_puresitedir}/mmc/__init__.py*
 %{py_puresitedir}/mmc/site.py*
-%{py_puresitedir}/mmc/client.py*
+%{py_puresitedir}/mmc/ssl.py*
+%{py_puresitedir}/mmc/client
 %dir %{py_puresitedir}/mmc/plugins
 %{py_puresitedir}/mmc/plugins/__init__.py*
 %{py_puresitedir}/mmc/plugins/base
