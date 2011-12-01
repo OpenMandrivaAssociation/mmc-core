@@ -121,7 +121,7 @@ make
 
 %install
 rm -rf %{buildroot}
-make DESTDIR="$RPM_BUILD_ROOT" install
+make DESTDIR="%{buildroot}" install
 # logrotate configuration
 install -d %{buildroot}%{_sysconfdir}/logrotate.d
 # install log rotation stuff
