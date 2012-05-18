@@ -1,4 +1,9 @@
+%define _use_internal_dependency_generator	0
+%if %mdkversion < 201200 || !%{_use_internal_dependency_generator}
 %define _requires_exceptions pear(graph\\|pear(includes\\|pear(modules
+%else
+%define __noautoreq 'pear\\(graph|pear\\(includes|pear\\(modules'
+%endif
 
 %define _enable_debug_packages %{nil}
 %define debug_package          %{nil}
@@ -9,7 +14,7 @@
 
 Summary:	Mandriva Management Console
 Name:		mmc-core
-Version:	3.0.3
+Version:	3.0.3.2
 %define subrel 1
 Release:	%mkrel 0
 License:	GPL
@@ -20,7 +25,6 @@ BuildRequires:	python-devel
 BuildRequires:	gettext
 BuildRequires:	gettext-devel
 BuildRequires:	openldap-devel
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 Mandriva Management Console agent & web interface with
@@ -69,6 +73,11 @@ Group:      System/Servers
 Requires:   python-base
 Requires:   python-mmc-core
 Suggests:   mmc-check-password
+%if %mdkversion >= 201200 && %{_use_internal_dependency_generator}
+# add buggy self dependencies
+Provides:	pear(ppolicy-xmlrpc.php)
+Provides:	pear(ppolicy.inc.php)
+%endif
 
 %description -n python-mmc-ppolicy
 Contains the password policy python classes to handle
@@ -89,6 +98,23 @@ Requires:       apache >= 2.0.52
 Requires:       apache-mod_php
 Requires:       php-xmlrpc
 Requires:       php-iconv
+%if %mdkversion >= 201200 && %{_use_internal_dependency_generator}
+# add buggy self dependencies
+Provides:	pear(ErrorHandling.php)
+Provides:	pear(FormGenerator.php)
+Provides:	pear(ModulesGenerator.php)
+Provides:	pear(PageGenerator.php)
+Provides:	pear(acl.inc.php)
+Provides:	pear(config.inc.php)
+Provides:	pear(edit.php)
+Provides:	pear(i18n.inc.php)
+Provides:	pear(license.php)
+Provides:	pear(localSidebar.php)
+Provides:	pear(logging-xmlrpc.inc.php)
+Provides:	pear(main_content.php)
+Provides:	pear(session.inc.php)
+Provides:	pear(xmlrpc.inc.php)
+%endif
 
 %description -n mmc-web-base
 Mandriva Management Console web interface designed by Linbox.
@@ -112,16 +138,17 @@ OpenLDAP module to validate users passwords against LDAP's password policies.
 %setup -q -n %{name}-%{version}
 
 %build
-
-./configure --prefix=/usr --sysconfdir=%{_sysconfdir} --localstatedir=%{_localstatedir} \
-  --libdir=%{_libdir} --with-initdir=%{_initrddir} \
-  --disable-python-check --enable-check-password \
-  --with-ldap-confdir=%{_sysconfdir}/openldap --with-ldap-libdir=%{_libdir}/openldap
+sed -e 's|-Werror||g' -i configure
+%configure2_5x						\
+	--with-initdir=%{_initrddir}			\
+	--disable-python-check				\
+	--enable-check-password				\
+	--with-ldap-confdir=%{_sysconfdir}/openldap	\
+	--with-ldap-libdir=%{_libdir}/openldap
 make
 
 %install
-rm -rf %{buildroot}
-make DESTDIR="%{buildroot}" install
+%makeinstall_std
 # logrotate configuration
 install -d %{buildroot}%{_sysconfdir}/logrotate.d
 # install log rotation stuff
@@ -176,9 +203,6 @@ if [ "$1" = "0" ]; then
     fi
 fi
 
-%clean
-rm -rf %{buildroot}
-
 %files -n mmc-agent
 %defattr(-,root,root,0755)
 %doc COPYING ChangeLog
@@ -224,7 +248,11 @@ rm -rf %{buildroot}
 
 %files -n mmc-web-ppolicy -f ppolicy.lang
 %defattr(-,root,root,0755)
-%{_datadir}/mmc/modules/ppolicy
+%dir %{_datadir}/mmc/modules/ppolicy
+%dir %{_datadir}/mmc/modules/ppolicy/locale
+%{_datadir}/mmc/modules/ppolicy/*.php
+%{_datadir}/mmc/modules/ppolicy/default
+%{_datadir}/mmc/modules/ppolicy/includes
 
 %files -n mmc-web-base -f base.lang
 %defattr(-,root,root,0755)
@@ -234,8 +262,25 @@ rm -rf %{buildroot}
 %attr(0640,root,root) %config(noreplace) %{_sysconfdir}/httpd/conf/webapps.d/mmc.conf
 %attr(0640,root,apache) %config(noreplace) %{_sysconfdir}/mmc/mmc.ini
 %dir %{_datadir}/mmc
-%{_datadir}/mmc/*
-%exclude %{_datadir}/mmc/modules/ppolicy
+%{_datadir}/mmc/*.php
+%{_datadir}/mmc/graph
+%{_datadir}/mmc/img
+%{_datadir}/mmc/includes
+%{_datadir}/mmc/jsframework
+%{_datadir}/mmc/logout
+%dir %{_datadir}/mmc/modules
+%dir %{_datadir}/mmc/modules/base
+%dir %{_datadir}/mmc/modules/base/locale
+%{_datadir}/mmc/modules/base/*.php
+%{_datadir}/mmc/modules/base/audit
+%{_datadir}/mmc/modules/base/computers
+%{_datadir}/mmc/modules/base/graph
+%{_datadir}/mmc/modules/base/groups
+%{_datadir}/mmc/modules/base/includes
+%{_datadir}/mmc/modules/base/logview
+%{_datadir}/mmc/modules/base/status
+%{_datadir}/mmc/modules/base/users
+%{_datadir}/mmc/modules/base/views
 
 %files -n python-mmc-plugins-tools
 %defattr(-,root,root,0755)
