@@ -15,7 +15,7 @@
 Summary:	Mandriva Management Console
 Name:		mmc-core
 Version:	3.0.3.2
-%define subrel 1
+%define subrel 2
 Release:	%mkrel 0
 License:	GPL
 Group:		System/Servers
