@@ -1,8 +1,7 @@
-#%#define _use_internal_dependency_generator	0
-%if %mdkversion < 201200 || !%{_use_internal_dependency_generator}
+%if !%{_use_internal_dependency_generator}
 %define _requires_exceptions pear(graph\\|pear(includes\\|pear(modules
 %else
-%define __noautoreq 'pear\\(graph|pear\\(includes|pear\\(modules'
+%define __noautoreq 'pear\\((graph|includes|modules)'
 %endif
 
 %define _enable_debug_packages %{nil}
