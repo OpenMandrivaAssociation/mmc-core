@@ -1,21 +1,10 @@
-%if !%{_use_internal_dependency_generator}
-%define _requires_exceptions pear(graph\\|pear(includes\\|pear(modules
-%else
-%define __noautoreq 'pear\\((graph|includes|modules)'
-%endif
-
-%define _enable_debug_packages %{nil}
-%define debug_package          %{nil}
-
-%if %mdkversion < 200610
-%define py_puresitedir %{_prefix}/lib/python%{pyver}/site-packages/
-%endif
+#%#define _use_internal_dependency_generator	0
+%define __noautoreq 'pear\\(graph|pear\\(includes|pear\\(modules'
 
 Summary:	Mandriva Management Console
 Name:		mmc-core
 Version:	3.0.3.2
-%define subrel 2
-Release:	%mkrel 0
+Release:	2
 License:	GPL
 Group:		System/Servers
 URL:		http://mds.mandriva.org/
@@ -203,7 +192,6 @@ if [ "$1" = "0" ]; then
 fi
 
 %files -n mmc-agent
-%defattr(-,root,root,0755)
 %doc COPYING ChangeLog
 %attr(0755,root,root) %{_initrddir}/mmc-agent
 %attr(0755,root,root) %dir %{_sysconfdir}/mmc
@@ -220,11 +208,9 @@ fi
 %{py_puresitedir}/mmc/agent.py*
 
 %files -n python-mmc-core
-%defattr(-,root,root,0755)
 %{py_puresitedir}/mmc/core
 
 %files -n python-mmc-base
-%defattr(-,root,root,0755)
 %{_datadir}/doc/python-mmc-base
 %docdir %{_datadir}/doc/python-mmc-base
 %attr(0755,root,root) %dir %{_sysconfdir}/mmc/plugins
@@ -241,12 +227,10 @@ fi
 %{py_puresitedir}/mmc/plugins/base
 
 %files -n python-mmc-ppolicy
-%defattr(-,root,root,0755)
 %attr(0640,root,root) %config(noreplace) %{_sysconfdir}/mmc/plugins/ppolicy.ini
 %{py_puresitedir}/mmc/plugins/ppolicy
 
 %files -n mmc-web-ppolicy -f ppolicy.lang
-%defattr(-,root,root,0755)
 %dir %{_datadir}/mmc/modules/ppolicy
 %dir %{_datadir}/mmc/modules/ppolicy/locale
 %{_datadir}/mmc/modules/ppolicy/*.php
@@ -254,7 +238,6 @@ fi
 %{_datadir}/mmc/modules/ppolicy/includes
 
 %files -n mmc-web-base -f base.lang
-%defattr(-,root,root,0755)
 %attr(0755,root,root) %dir %{_sysconfdir}/mmc/apache
 %attr(0640,root,root) %config(noreplace) %{_sysconfdir}/mmc/apache/mmc.conf
 %attr(0755,root,root) %dir %{_sysconfdir}/httpd/conf/webapps.d/
@@ -282,14 +265,62 @@ fi
 %{_datadir}/mmc/modules/base/views
 
 %files -n python-mmc-plugins-tools
-%defattr(-,root,root,0755)
 %dir %{_libdir}/mmc
 %dir %{_libdir}/mmc/backup-tools
 %{_libdir}/mmc/backup-tools/cdlist
 %{_libdir}/mmc/backup-tools/backup.sh
 
 %files -n mmc-check-password
-%defattr(-,root,root,0755)
 %attr(0644,root,root) %config(noreplace) %{_sysconfdir}/openldap/mmc-check-password.conf
 %attr(0755,root,root) %{_libdir}/openldap/mmc-check-password.*
 %attr(0755,root,root) %{_bindir}/mmc-password-helper
+
+
+%changelog
+* Mon May 21 2012 Paulo Andrade <pcpa@mandriva.com.br> 3.0.3.2-0.2mdv2012.0
++ Revision: 799937
+- Rebuild due to upload failure.
+- Update to latest upstream release.
+
+* Mon Sep 26 2011 Jean-Philippe Braun <jpbraun@mandriva.com> 3.0.3-0.1
++ Revision: 701297
+- new upstream release
+
+* Mon Aug 22 2011 Jean-Philippe Braun <jpbraun@mandriva.com> 3.0.2.1-0.1
++ Revision: 696142
+- new bugfix upstream release
+
+* Wed Jul 27 2011 Jean-Philippe Braun <jpbraun@mandriva.com> 3.0.2-0.3
++ Revision: 691964
+- Fix packages group
+- New tarball with correct PO files
+  mmc-check-password.conf is installed in the correct directory
+  Removed changelog
+  Fixed dependencies
+- New release of MMC-CORE
+
+* Wed May 04 2011 Oden Eriksson <oeriksson@mandriva.com> 3.0.0-3
++ Revision: 666473
+- mass rebuild
+
+* Tue Nov 02 2010 Funda Wang <fwang@mandriva.org> 3.0.0-2mdv2011.0
++ Revision: 591745
+- rebuild for py 2.7
+
+* Wed May 19 2010 Oden Eriksson <oeriksson@mandriva.com> 3.0.0-1mdv2010.1
++ Revision: 545357
+- 3.0.0 (final)
+
+* Thu Apr 29 2010 Anne Nicolas <ennael@mandriva.org> 3.0.0-0.0.2mdv2010.1
++ Revision: 540943
+- fix more requires
+- final version
+- fix requires
+
+* Tue Apr 27 2010 Oden Eriksson <oeriksson@mandriva.com> 3.0.0-0.0.1mdv2010.1
++ Revision: 539774
+- import mmc-core
+
+
+* Tue Apr 27 2010 Oden Eriksson <oeriksson@mandriva.com> 3.0.0-1mdv2010.1
+- initial Mandriva package
