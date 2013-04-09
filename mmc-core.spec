@@ -13,6 +13,7 @@ BuildRequires:	python-devel
 BuildRequires:	gettext
 BuildRequires:	gettext-devel
 BuildRequires:	openldap-devel
+BuildRequires:	wrap-devel
 
 %description
 Mandriva Management Console agent & web interface with
