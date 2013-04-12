@@ -1,5 +1,6 @@
 #%#define _use_internal_dependency_generator	0
 %define __noautoreq 'pear\\(graph|pear\\(includes|pear\\(modules'
+%define _disable_ld_no_undefined 1
 
 Summary:	Mandriva Management Console
 Name:		mmc-core
