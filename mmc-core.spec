@@ -6,9 +6,9 @@ Summary:	Mandriva Management Console
 Name:		mmc-core
 Version:	3.0.3.2
 Release:	2
-License:	GPL
+License:	GPLv2
 Group:		System/Servers
-URL:		http://mds.mandriva.org/
+Url:		http://mds.mandriva.org/
 Source0:	http://mds.mandriva.org/pub/mmc-core/sources/%{version}/%{name}-%{version}.tar.gz
 BuildRequires:	python-devel
 BuildRequires:	gettext
@@ -21,24 +21,24 @@ Mandriva Management Console agent & web interface with
 base and password policies modules.
 
 %package -n mmc-agent
-Summary:    Mandriva Management Console agent
-Group:      System/Servers
-Requires:   python-base
-Requires:   python-mmc-base
-Requires:   pyOpenSSL
-Requires:   logrotate
+Summary:	Mandriva Management Console agent
+Group:		System/Servers
+Requires:	python-base
+Requires:	python-mmc-base
+Requires:	pyOpenSSL
+Requires:	logrotate
 
 %description -n mmc-agent
 XMLRPC server of the Mandriva Management Console API.
 This is the underlying service used by the MMC web interface.
 
 %package -n python-mmc-core
-Summary:    Mandriva Management Console core
-Group:      System/Servers
-Requires:   python-base
-Requires:   python-twisted-web
-Suggests:   python-sqlalchemy > 0.4
-Suggests:   python-mysql
+Summary:	Mandriva Management Console core
+Group:		System/Servers
+Requires:	python-base
+Requires:	python-twisted-web
+Suggests:	python-sqlalchemy > 0.4
+Suggests:	python-mysql
 
 %description -n python-mmc-core
 Contains the mmc core python classes used by all other
@@ -46,11 +46,11 @@ modules.
 
 %package -n	python-mmc-base
 Summary:	Mandriva Management Console base plugin
-Group:      	System/Servers
-Requires:   	python-base
-Requires:  	python-ldap
-Requires:   	python-mmc-plugins-tools
-Requires:   	python-mmc-core
+Group:		System/Servers
+Requires:	python-base
+Requires:	python-ldap
+Requires:	python-mmc-plugins-tools
+Requires:	python-mmc-core
 
 %description -n	python-mmc-base
 Contains the base infrastructure for all MMC plugins:
@@ -58,11 +58,11 @@ Contains the base infrastructure for all MMC plugins:
  * base LDAP management classes
 
 %package -n python-mmc-ppolicy
-Summary:    Mandriva Management Console password policy plugin
-Group:      System/Servers
-Requires:   python-base
-Requires:   python-mmc-core
-Suggests:   mmc-check-password
+Summary:	Mandriva Management Console password policy plugin
+Group:		System/Servers
+Requires:	python-base
+Requires:	python-mmc-core
+Suggests:	mmc-check-password
 %if %mdkversion >= 201200 && %{_use_internal_dependency_generator}
 # add buggy self dependencies
 Provides:	pear(ppolicy-xmlrpc.php)
@@ -82,12 +82,12 @@ Requires:	mmc-web-base
 Contains the password policy web interface
 
 %package -n 	mmc-web-base
-Summary:        MMC web interface to interact with a MMC agent
-Group:          System/Servers
-Requires:       apache >= 2.0.52
-Requires:       apache-mod_php
-Requires:       php-xmlrpc
-Requires:       php-iconv
+Summary:	MMC web interface to interact with a MMC agent
+Group:		System/Servers
+Requires:	apache >= 2.0.52
+Requires:	apache-mod_php
+Requires:	php-xmlrpc
+Requires:	php-iconv
 %if %mdkversion >= 201200 && %{_use_internal_dependency_generator}
 # add buggy self dependencies
 Provides:	pear(ErrorHandling.php)
@@ -277,52 +277,3 @@ fi
 %attr(0755,root,root) %{_libdir}/openldap/mmc-check-password.*
 %attr(0755,root,root) %{_bindir}/mmc-password-helper
 
-
-%changelog
-* Mon May 21 2012 Paulo Andrade <pcpa@mandriva.com.br> 3.0.3.2-0.2mdv2012.0
-+ Revision: 799937
-- Rebuild due to upload failure.
-- Update to latest upstream release.
-
-* Mon Sep 26 2011 Jean-Philippe Braun <jpbraun@mandriva.com> 3.0.3-0.1
-+ Revision: 701297
-- new upstream release
-
-* Mon Aug 22 2011 Jean-Philippe Braun <jpbraun@mandriva.com> 3.0.2.1-0.1
-+ Revision: 696142
-- new bugfix upstream release
-
-* Wed Jul 27 2011 Jean-Philippe Braun <jpbraun@mandriva.com> 3.0.2-0.3
-+ Revision: 691964
-- Fix packages group
-- New tarball with correct PO files
-  mmc-check-password.conf is installed in the correct directory
-  Removed changelog
-  Fixed dependencies
-- New release of MMC-CORE
-
-* Wed May 04 2011 Oden Eriksson <oeriksson@mandriva.com> 3.0.0-3
-+ Revision: 666473
-- mass rebuild
-
-* Tue Nov 02 2010 Funda Wang <fwang@mandriva.org> 3.0.0-2mdv2011.0
-+ Revision: 591745
-- rebuild for py 2.7
-
-* Wed May 19 2010 Oden Eriksson <oeriksson@mandriva.com> 3.0.0-1mdv2010.1
-+ Revision: 545357
-- 3.0.0 (final)
-
-* Thu Apr 29 2010 Anne Nicolas <ennael@mandriva.org> 3.0.0-0.0.2mdv2010.1
-+ Revision: 540943
-- fix more requires
-- final version
-- fix requires
-
-* Tue Apr 27 2010 Oden Eriksson <oeriksson@mandriva.com> 3.0.0-0.0.1mdv2010.1
-+ Revision: 539774
-- import mmc-core
-
-
-* Tue Apr 27 2010 Oden Eriksson <oeriksson@mandriva.com> 3.0.0-1mdv2010.1
-- initial Mandriva package
