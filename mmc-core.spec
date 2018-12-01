@@ -212,6 +212,12 @@ fi
 
 %files -n python-mmc-core
 %{py_puresitedir}/mmc/core
+%{py_puresitedir}/mmc/__pycache__/__init__.cpython*
+%{py_puresitedir}/mmc/__pycache__/site.cpython*
+%{py_puresitedir}/mmc/__pycache__/site.cpython*
+%{py_puresitedir}/mmc/__pycache__/ssl.cpython*
+%{py_puresitedir}/mmc/plugins/__pycache__/__init__.cpython*
+
 
 %files -n python-mmc-base
 %{_datadir}/doc/python-mmc-base
