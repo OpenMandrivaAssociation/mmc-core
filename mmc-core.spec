@@ -9,7 +9,7 @@ Version:	3.0.3.2
 Release:	13
 License:	GPLv2
 Group:		System/Servers
-Url:		http://mds.mandriva.org/
+Url:		https://mds.mandriva.org/
 Source0:	http://mds.mandriva.org/pub/mmc-core/sources/%{version}/%{name}-%{version}.tar.gz
 BuildRequires:	python-devel
 BuildRequires:	gettext
